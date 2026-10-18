@@ -32,20 +32,58 @@ int main(int argc, char *argv[]){
 
 	char pass[100];
 
+	int sh = 0;
+
 	while(fgets(pass, sizeof(pass), stdin) != NULL){
 		size_t len = strlen(pass);
 		if (len > 0 && pass[len - 1] == '\n'){
 			pass[len - 1] = '\0';
 		}
 
-		char hash1[65];
+		len = strlen(pass);
 
-		int sh = check_sha256(pass, given, hash1);
+		for(int i = 0; i < len + 1; i++){
+        	char num[100];
+            strcpy(num, pass);
+			char hash1[65];
+			if(i == len){
+				sh = check_sha256(pass, given, hash1);
+				if(sh == 1){
+					printf("Found password: SHA256(%s) = %s\n", pass, given);
+				}
+			}
+			else{
 
+			
+            if('A' <= pass[i] && 'Z' >= pass[i]){
+            	num[i] = pass[i] + 32;
+				sh = check_sha256(num, given, hash1);
+				if(sh == 1){
+					printf("Found password: SHA256(%s) = %s\n", num, given);
+				}
+            }
+            else if('a' <= pass[i] && 'z' >= pass[i]){
+            	num[i] = pass[i] - 32;
+				sh = check_sha256(num, given, hash1);
+				if(sh == 1){
+					printf("Found password: SHA256(%s) = %s\n", num, given);			
+				}
+            }
+			}
+			
 		if(sh == 1){
-			printf("Found password: SHA256(%s) = %s", pass, hash1);
 			break;
 		}
+		if(sh == 0){
+			continue;
+		}
+		}
+		if(sh == 1){
+			break;
+		}
+		}
+
+	return 0;
 		
 	}
 
@@ -53,4 +91,4 @@ int main(int argc, char *argv[]){
 
 
 
-}
+
