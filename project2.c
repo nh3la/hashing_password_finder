@@ -4,8 +4,12 @@
 #include <openssl/sha.h>
 #include <ctype.h>
 
+unsigned long long sha256_calls = 0;
+
 int check_sha256(char *input_string, char *expected_hash, char *hex_hash){
 	unsigned char hash[32];
+	
+	sha256_calls++;
 
 	SHA256((unsigned char *)input_string, strlen(input_string), hash);
 
@@ -82,6 +86,11 @@ int main(int argc, char *argv[]){
 			break;
 		}
 		}
+	if(sh == 0){
+		printf("Did not find a matching password\n");
+	}
+
+	//fprintf(stderr, "Total SHA256 calls: %llu\n", sha256_calls);
 
 	return 0;
 		
